@@ -1,0 +1,71 @@
+      <!--
+ * @Description: In User Settings Edit
+ * @Author: shundong
+ * @Date: 2019-10-08 09:36:18
+ * @LastEditTime: 2019-10-08 10:05:23
+ * @LastEditors: Please set LastEditors
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>获取地区轮廓线</title>
+    <script type="text/javascript"
+        src="http://api.map.baidu.com/api?v=2.0&ak=62O7vRWrqkU0b3b4pD5L9g9tpzZdVujc"></script>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        body,
+        html,
+        #container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <script type="text/javascript">
+        // 创建Map实例
+        var map = new BMap.Map("container", {});                        
+        // 初始化地图,设置中心点坐标和地图级别
+        map.centerAndZoom(new BMap.Point(122, 40), 11);
+        map.enableScrollWheelZoom();
+        //加载颜色
+        madeBoundary();       
+        // 遍历通过 百度的 Boundary工具类拿到边界坐标
+        function madeBoundary() {
+           var datas = new Array("站前街道-red", "光中街道-#f639a8", "拥政街道-#20b832", "友谊街道-#f4e53c", "先进街道-rgba(68,159,209,.2)", "张家界-#5fd5b5", "益阳-#ddf50f", "郴州-#73be97", "永州-#1212ba", "怀化-#1bec73", "湘西土家族苗族自治州-#afb8e1", "娄底市-#d28e52", "长沙市-#fc7743");
+            //var datas = new Array("瓦房店-red", "普兰店-#a6fa68", "湘潭-#f639a8", "邵阳-#20b832", "岳阳-#f4e53c", "常德-rgba(68,159,209,.2)", "张家界-#5fd5b5", "益阳-#ddf50f", "郴州-#73be97", "永州-#1212ba", "怀化-#1bec73", "湘西土家族苗族自治州-#afb8e1", "娄底市-#d28e52", "长沙市-#fc7743");
+            var bdary = new BMap.Boundary();
+            for (var i = 0; i < datas.length; i++) {
+                getBoundary(datas[i], bdary);
+            }
+        }
+        function getBoundary(data, bdary) {
+            data = data.split("-");
+            bdary.get(data[0], function (rs) {       //获取行政区域
+                var count = rs.boundaries.length; //行政区域的点有多少个
+                var pointArray = [];
+                for (var i = 0; i < count; i++) {
+                    var ply = new BMap.Polygon(rs.boundaries[i], { strokeWeight: 2, strokeColor: "#ff0000", fillOpacity: 0.5, fillColor: data[1] }); //建立多边形覆盖物
+                    map.addOverlay(ply);  //添加覆盖物
+                }
+            })
+        }
+
+    </script>
+</body>
+
+</html>
+
